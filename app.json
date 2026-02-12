@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "carnaval-cadiz",
+    "name": "Carnaval de Cádiz",
     "slug": "carnaval-cadiz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/carnaval-cadiz-app.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/carnaval-cadiz-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,12 +17,19 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/carnaval-cadiz-app.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 3,
+      "package": "com.paulaymanu113.carnavalcadiz"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5f3cb6a7-e42f-4c08-8cbb-31c0040fff8a"
+      }
     }
   }
 }
