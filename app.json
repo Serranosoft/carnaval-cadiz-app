@@ -32,7 +32,7 @@
             }
         },
         "plugins": [
-            [
+            
                 [
                     "react-native-google-mobile-ads",
                     {
@@ -51,6 +51,6 @@
                     }
                 ]
             ]
-        ]
+        
     }
 }
