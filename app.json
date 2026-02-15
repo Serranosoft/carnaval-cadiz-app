@@ -1,35 +1,56 @@
 {
-  "expo": {
-    "name": "Carnaval de Cádiz",
-    "slug": "carnaval-cadiz",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/carnaval-cadiz-app.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/carnaval-cadiz-splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/carnaval-cadiz-app.png",
-        "backgroundColor": "#ffffff"
-      },
-      "versionCode": 3,
-      "package": "com.paulaymanu113.carnavalcadiz"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "5f3cb6a7-e42f-4c08-8cbb-31c0040fff8a"
-      }
+    "expo": {
+        "name": "Carnaval de Cádiz",
+        "slug": "carnaval-cadiz",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/carnaval-cadiz-app.png",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "splash": {
+            "image": "./assets/carnaval-cadiz-splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/carnaval-cadiz-app.png",
+                "backgroundColor": "#ffffff"
+            },
+            "versionCode": 3,
+            "package": "com.paulaymanu113.carnavalcadiz"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "5f3cb6a7-e42f-4c08-8cbb-31c0040fff8a"
+            }
+        },
+        "plugins": [
+            [
+                [
+                    "react-native-google-mobile-ads",
+                    {
+                        "androidAppId": "ca-app-pub-3738413299329691~9383010194",
+                        "iosAppId": "ca-app-pub-3738413299329691~9383010194",
+                        "delayAppMeasurementInit": true,
+                        "userTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you."
+                    }
+                ],
+                [
+                    "expo-build-properties",
+                    {
+                        "android": {
+                            "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
+                        }
+                    }
+                ]
+            ]
+        ]
     }
-  }
 }
