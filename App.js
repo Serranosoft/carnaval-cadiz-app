@@ -14,7 +14,7 @@ export default function App() {
     // Gestión de anuncios
     const [adsLoaded, setAdsLoaded] = useState(false);
     const [showOpenAd, setShowOpenAd] = useState(true);
-    const adsHandlerRef = createRef();
+    const adsHandlerRef = useRef();
     return (
         <View style={styles.container}>
             <AdsHandler canStartAds={loaded} ref={adsHandlerRef} showOpenAd={showOpenAd} adsLoaded={adsLoaded} setAdsLoaded={setAdsLoaded} setShowOpenAd={setShowOpenAd} />
@@ -24,8 +24,14 @@ export default function App() {
                 style={[{ flex: loaded ? 1 : 0 }, styles.webview]}
                 source={{ uri: 'https://carnaval-cadiz.vercel.app/' }}
                 onLoadEnd={() => {
-                    setLoaded(true);
-                    ref.current.postMessage(Dimensions.get("window").height.toFixed(2))
+                    try {
+                        setLoaded(true);
+                        if (ref.current) {
+                            ref.current.postMessage(Dimensions.get("window").height.toFixed(2));
+                        }
+                    } catch (error) {
+                        console.error("WebView onLoadEnd error:", error);
+                    }
                 }}
             />
             {adsLoaded && <BannerAd unitId={Platform.OS === "android" ? bannerId : bannerIdIOS} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{}} />}

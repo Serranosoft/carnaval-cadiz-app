@@ -14,31 +14,40 @@ const AdsHandler = forwardRef((props, ref) => {
     /* CONSENT */
     const isMobileAdsStartCalledRef = useRef(false);
     useEffect(() => {
-
         if (!props.canStartAds) return;
 
         const prepare = async () => {
-            const consentInfo = await AdsConsent.requestInfoUpdate();
-            AdsConsent.loadAndShowConsentFormIfRequired()
-                .then(startGoogleMobileAdsSDK)
-                .catch((error) => console.error('Consent gathering failed:', error));
-            startGoogleMobileAdsSDK();
+            try {
+                const consentInfo = await AdsConsent.requestInfoUpdate();
+                if (consentInfo.isConsentFormAvailable && consentInfo.status === 'REQUIRED') {
+                    await AdsConsent.loadAndShowConsentFormIfRequired();
+                }
+                await startGoogleMobileAdsSDK();
+            } catch (error) {
+                console.error('Consent gathering failed:', error);
+                // Try to start SDK anyway if consent fails (may still work in some regions/configs)
+                startGoogleMobileAdsSDK();
+            }
         }
 
         prepare();
     }, [props.canStartAds]);
 
     async function startGoogleMobileAdsSDK() {
-        const { canRequestAds } = await AdsConsent.getConsentInfo();
-        if (!canRequestAds || isMobileAdsStartCalledRef.current) {
-            return;
-        }
+        try {
+            const { canRequestAds } = await AdsConsent.getConsentInfo();
+            if (!canRequestAds || isMobileAdsStartCalledRef.current) {
+                return;
+            }
 
-        isMobileAdsStartCalledRef.current = true;
-        await MobileAds().initialize();
-        props.setAdsLoaded(true);
-        loadIntersitial(); // Cargar intersitial ads
-        loadOpenAppAd(); // Cargar open ads
+            isMobileAdsStartCalledRef.current = true;
+            await MobileAds().initialize();
+            props.setAdsLoaded(true);
+            loadIntersitial(); // Cargar intersitial ads
+            loadOpenAppAd(); // Cargar open ads
+        } catch (error) {
+            console.error('MobileAds initialization failed:', error);
+        }
     }
 
     useImperativeHandle(ref, () => ({
@@ -61,10 +70,8 @@ const AdsHandler = forwardRef((props, ref) => {
             if (props.closedIntersitialCallback) {
                 props.closedIntersitialCallback();
             }
-        } else {
             loadIntersitial();
         }
-
     }, [isClosedIntersitial, props.closedIntersitialCallback])
 
 
@@ -82,38 +89,63 @@ const AdsHandler = forwardRef((props, ref) => {
     const [appStateChanged, setAppStateChanged] = useState(AppState.currentState);
 
     useEffect(() => {
-        props.adsLoaded && appStateChanged == "active" && handleOpenAd();
-    }, [appStateChanged])
+        if (props.adsLoaded && appStateChanged === "active") {
+            handleOpenAd();
+        }
+    }, [appStateChanged, props.adsLoaded])
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener("change", nextAppState => {
+            setAppStateChanged(nextAppState);
+        });
+        return () => subscription.remove();
+    }, []);
 
     function handleOpenAd() {
-        // Cuando adtrigger es 0 significa que acaba de hacer un posible trigger de un intersitialAd
         if (props.showOpenAd) {
-            openAdRef.current && openAdLoadedRef.current && openAdRef.current.show();
+            if (openAdRef.current && openAdLoadedRef.current) {
+                try {
+                    openAdRef.current.show();
+                } catch (error) {
+                    console.error("Failed to show App Open Ad:", error);
+                    loadOpenAppAd(); // Try to reload if show fails
+                }
+            } else if (!openAdLoadedRef.current) {
+                loadOpenAppAd();
+            }
         } else {
             props.setShowOpenAd(true);
         }
     }
 
     function loadOpenAppAd() {
-        const appOpenAd = AppOpenAd.createForAdRequest(loadId);
-        appOpenAd.load();
+        try {
+            const appOpenAd = AppOpenAd.createForAdRequest(loadId);
 
-        appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
-            openAdRef.current = appOpenAd;
-            openAdLoadedRef.current = true;
-        });
-        appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
-            openAdRef.current.load();
-            openAdLoadedRef.current = false;
-        });
-        appOpenAd.addAdEventListener(AdEventType.ERROR, () => {
-        });
-        AppState.addEventListener("change", nextAppState => {
-            setAppStateChanged(nextAppState);
-        })
+            const onLoaded = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
+                openAdRef.current = appOpenAd;
+                openAdLoadedRef.current = true;
+            });
+
+            const onClosed = appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
+                openAdLoadedRef.current = false;
+                openAdRef.current = null;
+                loadOpenAppAd(); // Create a new instance for next time
+            });
+
+            const onError = appOpenAd.addAdEventListener(AdEventType.ERROR, (error) => {
+                console.error("App Open Ad Error:", error);
+                openAdLoadedRef.current = false;
+                openAdRef.current = null;
+            });
+
+            appOpenAd.load();
+        } catch (error) {
+            console.error("Failed to create App Open Ad:", error);
+        }
     }
 
-    return <></>
+    return null;
 })
 
 export default AdsHandler
