@@ -23,6 +23,9 @@ export default function App() {
                 ref={ref}
                 style={[{ flex: loaded ? 1 : 0 }, styles.webview]}
                 source={{ uri: 'https://carnaval-cadiz.vercel.app/' }}
+                androidLayerType="software"
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
                 onLoadEnd={() => {
                     try {
                         setLoaded(true);
@@ -35,8 +38,8 @@ export default function App() {
                 }}
             />
             {adsLoaded && <BannerAd unitId={Platform.OS === "android" ? bannerId : bannerIdIOS} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{}} />}
-            { !loaded && <Text style={{ alignSelf: "center", flex: 1, fontSize: 21, fontWeight: "bold", textAlign: "center" }}>Cargando la información...</Text> }
-            
+            {!loaded && <Text style={{ alignSelf: "center", flex: 1, fontSize: 21, fontWeight: "bold", textAlign: "center" }}>Cargando la información...</Text>}
+
         </View>
     );
 }
