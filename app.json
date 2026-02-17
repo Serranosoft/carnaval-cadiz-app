@@ -2,7 +2,7 @@
     "expo": {
         "name": "Carnaval de Cádiz",
         "slug": "carnaval-cadiz",
-        "version": "1.0.5",
+        "version": "1.0.6",
         "orientation": "portrait",
         "icon": "./assets/carnaval-cadiz-app.png",
         "userInterfaceStyle": "light",
@@ -20,7 +20,7 @@
                 "foregroundImage": "./assets/carnaval-cadiz-app.png",
                 "backgroundColor": "#ffffff"
             },
-            "versionCode": 8,
+            "versionCode": 9,
             "package": "com.paulaymanu113.carnavalcadiz"
         },
         "web": {
