@@ -2,7 +2,7 @@
     "expo": {
         "name": "Carnaval de Cádiz",
         "slug": "carnaval-cadiz",
-        "version": "1.0.6",
+        "version": "1.0.9",
         "orientation": "portrait",
         "icon": "./assets/carnaval-cadiz-app.png",
         "userInterfaceStyle": "light",
@@ -20,7 +20,7 @@
                 "foregroundImage": "./assets/carnaval-cadiz-app.png",
                 "backgroundColor": "#ffffff"
             },
-            "versionCode": 9,
+            "versionCode": 16,
             "package": "com.paulaymanu113.carnavalcadiz"
         },
         "web": {
@@ -32,6 +32,15 @@
             }
         },
         "plugins": [
+            "expo-asset",
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
+                    }
+                }
+            ],
             [
                 "react-native-google-mobile-ads",
                 {
@@ -39,14 +48,6 @@
                     "iosAppId": "ca-app-pub-3738413299329691~9383010194",
                     "delayAppMeasurementInit": true,
                     "userTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you."
-                }
-            ],
-            [
-                "expo-build-properties",
-                {
-                    "android": {
-                        "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
-                    }
                 }
             ]
         ]

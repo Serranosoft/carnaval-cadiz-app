@@ -1,5 +1,5 @@
-import { createRef, useRef, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
+import { useRef, useState, createRef } from 'react';
+import { Dimensions, StyleSheet, Text, View, Platform } from 'react-native';
 import WebView from 'react-native-webview';
 import Constants from "expo-constants";
 import AdsHandler from './AdsHandler';
@@ -14,7 +14,8 @@ export default function App() {
     // Gestión de anuncios
     const [adsLoaded, setAdsLoaded] = useState(false);
     const [showOpenAd, setShowOpenAd] = useState(true);
-    const adsHandlerRef = useRef();
+    const adsHandlerRef = createRef();
+
     return (
         <View style={styles.container}>
             <AdsHandler canStartAds={loaded} ref={adsHandlerRef} showOpenAd={showOpenAd} adsLoaded={adsLoaded} setAdsLoaded={setAdsLoaded} setShowOpenAd={setShowOpenAd} />
@@ -37,8 +38,8 @@ export default function App() {
                     }
                 }}
             />
-            {adsLoaded && <BannerAd unitId={Platform.OS === "android" ? bannerId : bannerIdIOS} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{}} />}
             {!loaded && <Text style={{ alignSelf: "center", flex: 1, fontSize: 21, fontWeight: "bold", textAlign: "center" }}>Cargando la información...</Text>}
+            {adsLoaded && <BannerAd unitId={Platform.OS === "android" ? bannerId : bannerIdIOS} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{}} />}
 
         </View>
     );
